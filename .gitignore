@@ -1,0 +1,19 @@
+# Python virtual environments
+myenv/
+venv/
+env/
+.venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+
+# Environment variables and secrets (NEVER push API keys or DB passwords)
+.env
+.env.*
+
+# Streamlit local configuration and state caches
+.streamlit/
