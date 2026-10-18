@@ -15,12 +15,20 @@ pool: ConnectionPool = None
 checkpointer: PostgresSaver = None
 
 def connect_db():
-    """Opens the connection pool when FastAPI starts (tables already created by scripts/init_db.py)."""
+    """Opens the connection pool with connect_timeout to handle Neon scale-to-zero wakeups."""
     global pool, checkpointer
     if not DB_URI:
         raise ValueError("DATABASE_URL environment variable is not set!")
     
-    pool = ConnectionPool(conninfo=DB_URI, max_size=10, kwargs={"autocommit": True})
+    # Added connect_timeout=10 so Neon compute has time to wake up from sleep
+    pool = ConnectionPool(
+        conninfo=DB_URI, 
+        max_size=10, 
+        kwargs={
+            "autocommit": True,
+            "connect_timeout": 10,
+        }
+    )
     checkpointer = PostgresSaver(pool)
 
 def close_db():
